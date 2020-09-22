@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import multer from 'multer';
+import multerConfig from './config/multer';
 
 import SessionController from './app/controllers/SessionController';
 import UserController from './app/controllers/UserController';
@@ -6,9 +8,14 @@ import ProductController from './app/controllers/ProductController';
 import authMiddleware from './app/middlewares/auth';
 
 const routes = new Router();
+const upload = multer(multerConfig);
 
 routes.get('/', (res, req) => {
   return req.send('Hey ei, bem vindo!');
+});
+
+routes.post('/files', upload.single('file'), (req, res) => {
+  return res.json({ ok: true });
 });
 
 routes.post('/users', UserController.store);
