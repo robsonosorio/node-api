@@ -8,21 +8,25 @@ import authMiddleware from './app/middlewares/auth';
 const routes = new Router();
 
 routes.get('/', (res, req) => {
-  return req.json({ Bem: 'vindo' });
+  return req.send('Hey ei, bem vindo!');
 });
 
-// #Users
-routes.get('/users', UserController.index);
 routes.post('/users', UserController.store);
-routes.put('/users/:id', UserController.update);
 
-// #Product
-routes.get('/products', ProductController.index);
-routes.get('/products/:id', ProductController.show);
+// # iniciar Session
 routes.post('/sessions', SessionController.store);
 
+// #Acesso todos usuarios
 routes.use(authMiddleware);
+routes.get('/users', UserController.index);
+routes.put('/users/:id', UserController.update);
 
+routes.get('/products', ProductController.index);
+routes.get('/products/:id', ProductController.show);
+
+// #Acesso usuarios ADM
 routes.post('/products', ProductController.store);
 routes.put('/products/:id', ProductController.update);
+routes.delete('/products/:id', ProductController.destroy);
+
 export default routes;

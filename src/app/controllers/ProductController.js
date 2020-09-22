@@ -86,6 +86,18 @@ class ProductController {
       manual,
     });
   }
+
+  async destroy(req, res) {
+    try {
+      const product = await Product.findByPk(req.params.id);
+
+      await product.destroy();
+
+      return res.json(product);
+    } catch (err) {
+      return res.status(400).json({ error: 'algo deu errado.' });
+    }
+  }
 }
 
 export default new ProductController();
