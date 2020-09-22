@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import * as Yup from 'yup';
 
 import Product from '../models/Product';
@@ -13,6 +14,17 @@ class ProductController {
     }
   }
 
+  async show(req, res) {
+    try {
+      const product = await Product.findByPk(req.params.id || req.params.name);
+
+      return res.json(product);
+    } catch (err) {
+      return res.status(400).json({ error: 'algo deu errado.' });
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
@@ -22,7 +34,7 @@ class ProductController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Falha na validação.' });
+      return res.status(400).json({ error: 'Falha na validação de dados.' });
     }
 
     const productExists = await Product.findOne({
@@ -50,7 +62,6 @@ class ProductController {
 
   async update(req, res) {
     const schema = Yup.object().shape({
-      id: Yup.index(),
       name: Yup.string(),
       description: Yup.string(),
       logo: Yup.string(),
@@ -58,20 +69,10 @@ class ProductController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Falha na validação.' });
+      return res.status(400).json({ error: 'Falha na validação de dados.' });
     }
 
-    const product = await Product.findByPk(req.userId);
-
-    if (product != product.id) {
-      const productExists = await Product.findOne({ where: { id } });
-
-      if (productExists) {
-        return res
-          .status(400)
-          .json({ error: 'Já existe produto cadastrado com esse nome.' });
-      }
-    }
+    const product = await Product.findByPk(req.params.id);
 
     const { id, name, description, logo, manual } = await product.update(
       req.body
