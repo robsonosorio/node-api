@@ -29,11 +29,11 @@ class ProductController {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       description: Yup.string().required(),
-      logo: Yup.string().required(),
+      logo: Yup.string(),
       manual: Yup.string(),
     });
 
-    if (!(await schema.isValid(req.body))) {
+    if (!(await schema.isValid(req.body, req.file))) {
       return res.status(400).json({ error: 'Falha na validação de dados.' });
     }
 
@@ -47,17 +47,19 @@ class ProductController {
         .json({ error: 'Já existe produto cadastrado com esse nome.' });
     }
 
-    const { id, name, description, logo, manual } = await Product.create(
-      req.body
-    );
+    const { filename: logo } = req.file;
 
-    return res.json({
+    const { id, name, description, manual } = req.body;
+
+    const products = await Product.create({
       id,
       name,
       description,
       logo,
       manual,
     });
+
+    return res.json(products);
   }
 
   async update(req, res) {
@@ -74,17 +76,18 @@ class ProductController {
 
     const product = await Product.findByPk(req.params.id);
 
-    const { id, name, description, logo, manual } = await product.update(
-      req.body
-    );
+    const { filename: logo } = req.file;
 
-    return res.json({
+    const { id, name, description, manual } = req.body;
+    const products = await product.update({
       id,
       name,
       description,
       logo,
       manual,
     });
+
+    return res.json(products);
   }
 
   async destroy(req, res) {
