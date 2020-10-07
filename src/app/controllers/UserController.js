@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 import User from '../models/User';
 
 class UserController {
+  // eslint-disable-next-line class-methods-use-this
   async index(req, res) {
     try {
       const user = await User.findAll();
@@ -13,6 +14,7 @@ class UserController {
     }
   }
 
+  // eslint-disable-next-line class-methods-use-this
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
@@ -20,7 +22,7 @@ class UserController {
       password: Yup.string().required(),
     });
 
-    if (await schema.isValid(req.body)) {
+    if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Falha na validação de dados.' });
     }
 
@@ -32,22 +34,23 @@ class UserController {
         .json({ error: 'Já existe usuário cadastrado com esse email' });
     }
 
-    const { id, name, email, adm_user, active } = await User.create(req.body);
+    const { id, name, email, adm, active } = await User.create(req.body);
 
     return res.json({
       id,
       name,
       email,
-      adm_user,
+      adm,
       active,
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   async update(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string(),
       email: Yup.string().email(),
-      oldPassword: Yup.string().min(6),
+      oldPassword: Yup.string(),
       password: Yup.string()
         .min(6)
         .when('oldPassword', (oldPassword, field) =>
@@ -66,6 +69,7 @@ class UserController {
 
     const user = await User.findByPk(req.params.id);
 
+    // eslint-disable-next-line eqeqeq
     if (email != user.email) {
       const userExists = await User.findOne({ where: { email } });
 
@@ -80,13 +84,13 @@ class UserController {
       return res.status(401).json({ error: 'Senha inválida.' });
     }
 
-    const { id, name, adm_user, active } = await user.update(req.body);
+    const { id, name, adm, active } = await user.update(req.body);
 
     return res.json({
       id,
       name,
       email,
-      adm_user,
+      adm,
       active,
     });
   }

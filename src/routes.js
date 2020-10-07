@@ -2,11 +2,11 @@ import { Router } from 'express';
 import multer from 'multer';
 import multerConfig from './config/multer';
 
-import SessionController from './app/controllers/SessionController';
 import UserController from './app/controllers/UserController';
 import ProductController from './app/controllers/ProductController';
 
-import authMiddleware from './app/middlewares/auth';
+// import SessionController from './app/controllers/SessionController';
+// import authMiddleware from './app/middlewares/auth';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -18,10 +18,10 @@ routes.get('/', (req, res) => {
 routes.post('/users', UserController.store);
 
 // # iniciar Session
-routes.post('/sessions', SessionController.store);
+// routes.post('/sessions', SessionController.store);
+// routes.use(authMiddleware);
 
 // #Acesso todos usuarios
-// routes.use(authMiddleware);
 routes.get('/users', UserController.index);
 routes.put('/users/:id', UserController.update);
 

@@ -38,14 +38,6 @@ class ProductController {
       return res.status(400).json({ error: 'Falha na validação de dados.' });
     }
 
-    const isUserAdm = await User.findOne({
-      where: { adm_user: true, active: true },
-    });
-
-    if (!isUserAdm) {
-      return res.status(401).json({ error: 'Acesso apenas para usúario ADM.' });
-    }
-
     const productExists = await Product.findOne({
       where: { name: req.body.name },
     });
