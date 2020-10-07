@@ -21,7 +21,7 @@ routes.post('/users', UserController.store);
 routes.post('/sessions', SessionController.store);
 
 // #Acesso todos usuarios
-routes.use(authMiddleware);
+// routes.use(authMiddleware);
 routes.get('/users', UserController.index);
 routes.put('/users/:id', UserController.update);
 
