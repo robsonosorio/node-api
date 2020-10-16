@@ -1,5 +1,4 @@
 import Sequelize, { Model } from 'sequelize';
-
 class Product extends Model {
   static init(sequelize) {
     super.init(
@@ -13,7 +12,6 @@ class Product extends Model {
         sequelize,
       }
     );
-
     return this;
   }
 }
