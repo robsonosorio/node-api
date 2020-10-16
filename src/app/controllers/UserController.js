@@ -2,7 +2,6 @@ import * as Yup from 'yup';
 import User from '../models/User';
 
 class UserController {
-
   async index(req, res) {
     try {
       const user = await User.findAll();
@@ -57,7 +56,7 @@ class UserController {
     const schema = Yup.object().shape({
       name: Yup.string(),
       email: Yup.string().email(),
-      password: Yup.string()
+      password: Yup.string(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -66,7 +65,7 @@ class UserController {
 
     const user = await User.findByPk(req.params.id);
 
-    const { id, name, adm, active } = await user.update(req.body);
+    const { id, name, email, adm, active } = await user.update(req.body);
 
     return res.json({
       id,
