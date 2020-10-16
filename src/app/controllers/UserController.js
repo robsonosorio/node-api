@@ -1,9 +1,8 @@
 import * as Yup from 'yup';
-
 import User from '../models/User';
 
 class UserController {
-  // eslint-disable-next-line class-methods-use-this
+
   async index(req, res) {
     try {
       const user = await User.findAll();
@@ -14,7 +13,16 @@ class UserController {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  async show(req, res) {
+    try {
+      const user = await User.findByPk(req.params.id || req.params.name);
+
+      return res.json(user);
+    } catch (err) {
+      return res.status(400).json({ error: 'algo deu errado.' });
+    }
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
@@ -45,44 +53,18 @@ class UserController {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async update(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string(),
       email: Yup.string().email(),
-      oldPassword: Yup.string(),
       password: Yup.string()
-        .min(6)
-        .when('oldPassword', (oldPassword, field) =>
-          oldPassword ? field.required() : field
-        ),
-      confirmPassword: Yup.string().when('password', (password, field) =>
-        password ? field.required().oneOf([Yup.ref('password')]) : field
-      ),
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Falha na validação.' });
+      return res.status(400).json({ error: 'Falha na validação de dados.' });
     }
-
-    const { email, oldPassword } = req.body;
 
     const user = await User.findByPk(req.params.id);
-
-    // eslint-disable-next-line eqeqeq
-    if (email != user.email) {
-      const userExists = await User.findOne({ where: { email } });
-
-      if (userExists) {
-        return res
-          .status(400)
-          .json({ error: 'Já existe usuário cadastrado com esse email' });
-      }
-    }
-
-    if (oldPassword && !(await user.checkPassword(oldPassword))) {
-      return res.status(401).json({ error: 'Senha inválida.' });
-    }
 
     const { id, name, adm, active } = await user.update(req.body);
 
@@ -93,6 +75,18 @@ class UserController {
       adm,
       active,
     });
+  }
+
+  async destroy(req, res) {
+    try {
+      const user = await User.findByPk(req.params.id);
+
+      await user.destroy();
+
+      return res.json(user);
+    } catch (err) {
+      return res.status(400).json({ error: 'algo deu errado.' });
+    }
   }
 }
 

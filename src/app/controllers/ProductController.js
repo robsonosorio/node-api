@@ -1,10 +1,8 @@
-/* eslint-disable class-methods-use-this */
 import * as Yup from 'yup';
-import User from '../models/User';
-
 import Product from '../models/Product';
 
 class ProductController {
+
   async index(req, res) {
     try {
       const product = await Product.findAll();
@@ -25,7 +23,6 @@ class ProductController {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
@@ -71,7 +68,7 @@ class ProductController {
       manual: Yup.string(),
     });
 
-    if (!(await schema.isValid(req.body))) {
+    if (!(await schema.isValid(req.body, req.file))) {
       return res.status(400).json({ error: 'Falha na validação de dados.' });
     }
 
@@ -80,6 +77,7 @@ class ProductController {
     const { filename: logo } = req.file;
 
     const { id, name, description, manual } = req.body;
+
     const products = await product.update({
       id,
       name,
