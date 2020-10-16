@@ -15,19 +15,22 @@ routes.get('/', (req, res) => {
   return res.send('Hey ei, bem vindo!');
 });
 
-routes.post('/users', UserController.store);
 
-// # iniciar Session
+// #SESSION
 // routes.post('/sessions', SessionController.store);
 // routes.use(authMiddleware);
 
-// #Acesso todos usuarios
+// #USERS
 routes.get('/users', UserController.index);
-routes.put('/users/:id', UserController.update);
+routes.get('/users/:id', UserController.show);
 
+routes.post('/users', UserController.store);
+routes.put('/users/:id', UserController.update);
+routes.delete('/users/:id', UserController.destroy);
+
+// #PRODUCTS
 routes.get('/products', ProductController.index);
 routes.get('/products/:id', ProductController.show);
-
 // #Acesso usuarios ADM
 routes.post('/products', upload.single('logo'), ProductController.store);
 routes.put('/products/:id', upload.single('logo'), ProductController.update);
