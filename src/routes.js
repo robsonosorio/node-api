@@ -15,7 +15,7 @@ routes.get('/', (req, res) => {
   return res.send('Hey ei, bem vindo!');
 });
 // #SESSION
-// routes.post('/sessions', SessionController.store);
+// routes.post('/auth', SessionController.store);
 // routes.use(authMiddleware);
 
 // #USERS
